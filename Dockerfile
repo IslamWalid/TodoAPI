@@ -2,7 +2,7 @@ FROM node:16
 
 WORKDIR /app
 
-COPY todo.js package.json ./
+COPY todo.js model.js controller.js package.json ./
 
 RUN npm install
 
