@@ -47,9 +47,20 @@ let server = http.createServer((req, res) => {
   }
 });
 
+let port = '8080';
+let dbfile = 'dbfile.db';
+
+if (process.env.PORT) {
+  port = process.env.PORT;
+}
+
+if (process.env.DB_FILE) {
+  dbfile = process.env.DB_FILE;
+}
+
 try {
-  model.initDatabase('test.db');
-  server.listen(8080);
+  model.initDatabase(dbfile);
+  server.listen(port);
 } catch (err) {
   console.error(err.message);
   process.exit(1);
