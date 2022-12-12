@@ -9,7 +9,7 @@ async function initDatabase(dbfile) {
 
   let run = util.promisify(db.run).bind(db);
   await run(
-      'CREATE TABLE IF NOT EXISTS Tasks(id INT PRIMARY KEY, title VARCHAR NOT NULL, completed BOOLEAN NOT NULL)');
+    'CREATE TABLE IF NOT EXISTS Tasks(id INT PRIMARY KEY, title VARCHAR NOT NULL, completed BOOLEAN NOT NULL)');
 
   let get = util.promisify(db.get).bind(db);
   let row = await get('SELECT max(id) AS maxID FROM Tasks');
@@ -38,15 +38,15 @@ async function getAllTasks() {
 async function addTask(task) {
   let run = util.promisify(db.run).bind(db);
   await run('INSERT INTO Tasks VALUES($id, $title, $completed)', {
-    $id : nextID,
-    $title : task.title,
-    $completed : task.completed,
+    $id: nextID,
+    $title: task.title,
+    $completed: task.completed,
   });
 
   return {
-    id : nextID++,
-    title : task.title,
-    completed : task.completed,
+    id: nextID++,
+    title: task.title,
+    completed: task.completed,
   };
 }
 
@@ -54,12 +54,12 @@ async function modifyTask(task) {
   await this.getTaskByID(task.id);
   let run = util.promisify(db.run).bind(db);
   await run(
-      'UPDATE Tasks SET title = $title, completed = $completed WHERE id = $id',
-      {
-        $id : task.id,
-        $title : task.title,
-        $completed : task.completed,
-      });
+    'UPDATE Tasks SET title = $title, completed = $completed WHERE id = $id',
+    {
+      $id: task.id,
+      $title: task.title,
+      $completed: task.completed,
+    });
 
   return task;
 }

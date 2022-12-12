@@ -13,37 +13,37 @@ let server = http.createServer((req, res) => {
   }
 
   switch (req.method) {
-  case 'GET':
-    controller.getHandler(res, endPoint);
-    break;
+    case 'GET':
+      controller.getHandler(res, endPoint);
+      break;
 
-  case 'POST':
-    jsonBody(req, res, (err, requestBody) => {
-      if (err) {
-        controller.writeResponse(400);
-        return;
-      }
-      controller.postHandler(res, requestBody);
-    });
-    break;
+    case 'POST':
+      jsonBody(req, res, (err, requestBody) => {
+        if (err) {
+          controller.writeResponse(400);
+          return;
+        }
+        controller.postHandler(res, requestBody);
+      });
+      break;
 
-  case 'PATCH':
-    jsonBody(req, res, (err, requestBody) => {
-      if (err) {
-        controller.writeResponse(400);
-        return;
-      }
-      controller.patchHandler(res, requestBody);
-    });
-    break;
+    case 'PATCH':
+      jsonBody(req, res, (err, requestBody) => {
+        if (err) {
+          controller.writeResponse(400);
+          return;
+        }
+        controller.patchHandler(res, requestBody);
+      });
+      break;
 
-  case 'DELETE':
-    controller.deleteHandler(res, parseInt(endPoint[1]));
-    break;
+    case 'DELETE':
+      controller.deleteHandler(res, parseInt(endPoint[1]));
+      break;
 
-  default:
-    controller.writeResponse(405);
-    break;
+    default:
+      controller.writeResponse(405);
+      break;
   }
 });
 
