@@ -1,0 +1,160 @@
+---
+openapi: 3.0.0
+info:
+  title: Todo API
+  description: RESTful Todo API for a todo-list application.
+  version: 1.0.0
+paths:
+  /todo:
+    get:
+      tags:
+      - todo
+      summary: Get todo list
+      description: Retrieving todo list
+      operationId: getAllTasks
+      responses:
+        "200":
+          description: All requests recieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/todo_with_id'
+        "500":
+          description: Error due to any server failure
+    post:
+      tags:
+      - todo
+      summary: Add a new todo task to the todo list
+      operationId: addTask
+      requestBody:
+        description: json object of the task to be added
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/todo_without_id'
+      responses:
+        "201":
+          description: Request successeded and a task was created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/todo_with_id'
+        "400":
+          description: Invalid input, object is invalid
+        "500":
+          description: Error due to any server failure
+    patch:
+      tags:
+      - todo
+      summary: Update an existing todo task
+      operationId: modifyTask
+      requestBody:
+        description: json object of the task to be modified
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/todo_with_id'
+      responses:
+        "200":
+          description: Request successeded and task was modified.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/todo_with_id'
+        "400":
+          description: Invalid input, object is invalid
+        "404":
+          description: Not found
+        "500":
+          description: Error due to any server failure
+  /todolist/{id}:
+    get:
+      tags:
+      - todo
+      summary: Get todo task by id
+      operationId: getTaskByID
+      parameters:
+      - name: id
+        in: path
+        description: Id of todo task
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+          example: 5
+      responses:
+        "200":
+          description: Request successeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/todo_with_id'
+        "400":
+          description: The specified task ID is invalid
+        "404":
+          description: Not found
+        "500":
+          description: Error due to any server failure
+    delete:
+      tags:
+      - todo
+      summary: Delete an existing todo task
+      operationId: deleteTask
+      parameters:
+      - name: id
+        in: path
+        description: Id of todo item
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "202":
+          description: Request successeded
+        "400":
+          description: The specified task ID is invalid
+        "404":
+          description: Not found
+        "500":
+          description: Error due to any server failure
+components:
+  schemas:
+    todo_without_id:
+      required:
+      - completed
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+          example: clean the room
+        completed:
+          type: boolean
+          example: false
+
+    todo_with_id:
+      required:
+      - completed
+      - id
+      - title
+      type: object
+      properties:
+        id:
+          minimum: 1
+          type: integer
+          format: int64
+          example: 1
+        title:
+          type: string
+          example: clean the room
+        completed:
+          type: boolean
+          example: false
