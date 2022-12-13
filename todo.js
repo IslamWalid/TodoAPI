@@ -1,6 +1,5 @@
 const http = require('http');
 const url = require('url');
-const jsonBody = require('body/json');
 const controller = require('./controller');
 const model = require('./model')
 
@@ -18,23 +17,11 @@ let server = http.createServer((req, res) => {
       break;
 
     case 'POST':
-      jsonBody(req, res, (err, requestBody) => {
-        if (err) {
-          controller.writeResponse(400);
-          return;
-        }
-        controller.postHandler(res, requestBody);
-      });
+      controller.postHandler(req, res);
       break;
 
     case 'PATCH':
-      jsonBody(req, res, (err, requestBody) => {
-        if (err) {
-          controller.writeResponse(400);
-          return;
-        }
-        controller.patchHandler(res, requestBody);
-      });
+      controller.patchHandler(req, res);
       break;
 
     case 'DELETE':
@@ -42,7 +29,7 @@ let server = http.createServer((req, res) => {
       break;
 
     default:
-      controller.writeResponse(405);
+      controller.methodNotAllowedHandler(res);
       break;
   }
 });

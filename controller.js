@@ -1,3 +1,4 @@
+const jsonBody = require('body/json');
 const todoDatabase = require('./model');
 
 async function getHandler(res, endPoint) {
@@ -18,31 +19,45 @@ async function getHandler(res, endPoint) {
   }
 }
 
-async function postHandler(res, task) {
-  if (task.title.length === 0) {
-    writeResponse(res, 400);
-    return;
-  }
+async function postHandler(req, res) {
+  jsonBody(req, res, async (err, body) => {
+    if (err) {
+      writeResponse(res, 400);
+      return;
+    }
 
-  try {
-    let addedTask = await todoDatabase.addTask(task);
-    writeResponse(res, 201, JSON.stringify(addedTask));
-  } catch (err) {
-    writeResponse(res, 500);
-  }
-}
+    if (body.title.length === 0) {
+      writeResponse(res, 400);
+      return;
+    }
 
-async function patchHandler(res, task) {
-  try {
-    let modifiedTask = await todoDatabase.modifyTask(task);
-    writeResponse(res, 200, JSON.stringify(modifiedTask));
-  } catch (err) {
-    if (err.message === 'task not found') {
-      writeResponse(res, 404);
-    } else {
+    try {
+      let addedTask = await todoDatabase.addTask(body);
+      writeResponse(res, 201, JSON.stringify(addedTask));
+    } catch (err) {
       writeResponse(res, 500);
     }
-  }
+  });
+}
+
+async function patchHandler(req, res) {
+  jsonBody(req, res, async (err, body) => {
+    if (err) {
+      writeResponse(res, 400);
+      return;
+    }
+
+    try {
+      let modifiedTask = await todoDatabase.modifyTask(body);
+      writeResponse(res, 200, JSON.stringify(modifiedTask));
+    } catch (err) {
+      if (err.message === 'task not found') {
+        writeResponse(res, 404);
+      } else {
+        writeResponse(res, 500);
+      }
+    }
+  });
 }
 
 async function deleteHandler(res, id) {
@@ -62,6 +77,10 @@ async function deleteHandler(res, id) {
   }
 }
 
+function methodNotAllowedHandler(res) {
+  writeResponse(res, 405)
+}
+
 function writeResponse(res, statusCode, body) {
   res.statusCode = statusCode;
   if (body) {
@@ -77,4 +96,5 @@ module.exports = {
   patchHandler,
   deleteHandler,
   writeResponse,
+  methodNotAllowedHandler,
 };
