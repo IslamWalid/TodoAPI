@@ -45,10 +45,13 @@ if (process.env.DB_FILE) {
   dbfile = process.env.DB_FILE;
 }
 
-try {
-  model.initDatabase(dbfile);
-  server.listen(port);
-} catch (err) {
-  console.error(err.message);
-  process.exit(1);
-}
+(async () => {
+  try {
+    await model.initDatabase(dbfile);
+    server.listen(port);
+  } catch (err) {
+    console.error(err.message);
+    process.exit(1);
+  }
+})();
+
